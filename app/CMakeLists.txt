@@ -9,8 +9,9 @@ if(MSVC)
     add_compile_options(/utf-8)
 endif()
 
+
 # add executable
-add_executable(main WIN32 src/main.cpp src/controller.cpp src/controller.h src/kanji.h)
+add_executable(main WIN32 src/main.cpp src/controller.cpp src/controller.h src/kanji.h src/database.h src/database.cpp)
 
 # add dependencies
 include(cmake/CPM.cmake)
@@ -28,3 +29,5 @@ target_include_directories(sqlite3 PUBLIC ${sqlite3_SOURCE_DIR})
 
 # link dependencies
 target_link_libraries(main PRIVATE webview::core sqlite3 nlohmann_json::nlohmann_json) 
+
+
