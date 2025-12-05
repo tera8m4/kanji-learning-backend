@@ -90,11 +90,10 @@ namespace kanji::database
 	void ReviewStateRepository::CreateOrUpdateReviewState(const KanjiReviewState& state)
 	{
 		const char* sql =
-		    "INSERT INTO kanji_review_state (kanji_id, level, incorrect_streak, next_review_date, created_at) "
-		    "VALUES (?, ?, ?, ?, unixepoch()) "
+		    "INSERT INTO kanji_review_state (kanji_id, level, next_review_date, created_at) "
+		    "VALUES (?, ?, ?, unixepoch()) "
 		    "ON CONFLICT(kanji_id) DO UPDATE SET "
 		    "level = excluded.level, "
-		    "incorrect_streak = excluded.incorrect_streak, "
 		    "next_review_date = excluded.next_review_date;";
 		sqlite3_stmt* stmt;
 
@@ -109,7 +108,6 @@ namespace kanji::database
 
 		sqlite3_bind_int(stmt, 1, state.kanji_id);
 		sqlite3_bind_int(stmt, 2, state.level);
-		sqlite3_bind_int(stmt, 3, state.incorrect_streak);
 		sqlite3_bind_int64(stmt, 4, timestamp);
 
 		rc = sqlite3_step(stmt);

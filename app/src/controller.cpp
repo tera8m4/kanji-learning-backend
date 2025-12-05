@@ -16,7 +16,7 @@ namespace kanji
 		    .GetKanjiForReview();
 	}
 
-	void Controller::SetAnswers(const std::vector<std::pair<int, bool>>& in_answers)
+	void Controller::SetAnswers(const std::vector<KanjiAnswer>& in_answers)
 	{
 	}
 } // namespace kanji
