@@ -1,4 +1,5 @@
 #include "controller.h"
+#include "database/database_context.h"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -14,7 +15,10 @@ int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrevInst*/,
 int main()
 {
 #endif
-	kanji::Controller controller;
+	kanji::database::DatabaseContext context{"kanji.db"};
+	context.GetReviewStateRepository().InitializeNewReviewStates(20);
+	kanji::Controller controller{context};
+
 	try
 	{
 		const std::filesystem::path filename{"index.html"};

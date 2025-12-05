@@ -1,18 +1,19 @@
 ﻿#include "controller.h"
+#include "database/database_context.h"
 #include "kanji.h"
 
 namespace kanji
 {
+	Controller::Controller(database::DatabaseContext& in_db)
+	    : db{in_db}
+	{
+	}
+
 	std::vector<KanjiData> Controller::GetReviewKanjis()
 	{
-		KanjiData data = {
-		    .id = 1,
-		    .kanji = "日",
-		    .meaning = "sun, day",
-		    .examples = {{.word = "毎日", .reading = "まいにち"}}
-		};
-
-		return {data};
+		return db
+		    .GetKanjiRepository()
+		    .GetKanjiForReview();
 	}
 
 	void Controller::SetAnswers(const std::vector<std::pair<int, bool>>& in_answers)

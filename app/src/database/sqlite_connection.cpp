@@ -1,5 +1,6 @@
 #include "sqlite_connection.h"
 #include <iostream>
+#include <spdlog/spdlog.h>
 #include <sqlite3.h>
 
 namespace kanji::database
@@ -10,7 +11,7 @@ namespace kanji::database
 		int rc = sqlite3_open(db_path.c_str(), &db);
 		if (rc != SQLITE_OK)
 		{
-			std::cerr << "Cannot open database: " << sqlite3_errmsg(db) << std::endl;
+			spdlog::error("Cannot open database: {0}", sqlite3_errmsg(db));
 		}
 	}
 
@@ -45,8 +46,8 @@ namespace kanji::database
 		    "kanji_id INTEGER PRIMARY KEY,"
 		    "level INTEGER NOT NULL DEFAULT 0,"
 		    "incorrect_streak INTEGER NOT NULL DEFAULT 0,"
-		    "next_review_date INTEGER NOT NULL DEFAULT NOW(),"
-		    "created_at INTEGER NOT NULL DEFAULT NOW()"
+		    "next_review_date INTEGER NOT NULL DEFAULT (unixepoch()),"
+		    "created_at INTEGER NOT NULL DEFAULT (unixepoch()),"
 		    "FOREIGN KEY(kanji_id) REFERENCES kanjis(id) ON DELETE CASCADE"
 		    ");";
 
@@ -55,7 +56,7 @@ namespace kanji::database
 		int rc = sqlite3_exec(db, kanji_table_sql, nullptr, nullptr, &err_msg);
 		if (rc != SQLITE_OK)
 		{
-			std::cerr << "SQL error: " << err_msg << std::endl;
+			spdlog::error("SQL error: {0}", err_msg);
 			sqlite3_free(err_msg);
 			return false;
 		}
@@ -63,7 +64,7 @@ namespace kanji::database
 		rc = sqlite3_exec(db, words_table_sql, nullptr, nullptr, &err_msg);
 		if (rc != SQLITE_OK)
 		{
-			std::cerr << "SQL error: " << err_msg << std::endl;
+			spdlog::error("SQL error: {0}", err_msg);
 			sqlite3_free(err_msg);
 			return false;
 		}
@@ -71,7 +72,7 @@ namespace kanji::database
 		rc = sqlite3_exec(db, review_state_table_sql, nullptr, nullptr, &err_msg);
 		if (rc != SQLITE_OK)
 		{
-			std::cerr << "SQL error: " << err_msg << std::endl;
+			spdlog::error("SQL error: {0}", err_msg);
 			sqlite3_free(err_msg);
 			return false;
 		}

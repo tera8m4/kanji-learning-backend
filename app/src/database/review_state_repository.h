@@ -1,6 +1,9 @@
 #pragma once
 
-struct kanji::KanjiReviewState;
+namespace kanji
+{
+	struct KanjiReviewState;
+}
 
 namespace kanji::database
 {
@@ -9,6 +12,9 @@ namespace kanji::database
 	class ReviewStateRepository
 	{
 	public:
+		explicit ReviewStateRepository(const SQLiteConnection& in_connection)
+		    : connection{in_connection}
+		{}
 		void InitializeNewReviewStates(int count);
 		void CreateOrUpdateReviewState(const KanjiReviewState& state);
 

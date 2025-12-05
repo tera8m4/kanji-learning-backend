@@ -9,8 +9,7 @@ namespace kanji::database
 {
 	void ReviewStateRepository::InitializeNewReviewStates(int count)
 	{
-		// Check if there are any unreviewed states (created_at == next_review_date)
-		const char* check_sql = "SELECT COUNT(*) FROM kanji_review_state WHERE created_at = next_review_date;";
+		const char* check_sql = "SELECT COUNT(*) FROM kanji_review_state WHERE created_at = next_review_date OR date(created_at, 'unixepoch') = date('now');";
 		sqlite3_stmt* check_stmt;
 
 		int rc = sqlite3_prepare_v2(connection, check_sql, -1, &check_stmt, nullptr);
