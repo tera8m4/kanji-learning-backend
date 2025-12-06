@@ -116,6 +116,10 @@ export function useKanjiReview() {
     }
   };
 
+  const handleLearnMore = async () => {
+    await transport.learnMoreKanjis();
+  };
+
   const currentReview = reviewDeck[0];
   const currentKanji = currentReview ? kanjis[currentReview.kanjiIndex] : null;
 
@@ -130,5 +134,6 @@ export function useKanjiReview() {
     shake,
     isLoading,
     handleSubmit,
+    handleLearnMore,
   };
 }

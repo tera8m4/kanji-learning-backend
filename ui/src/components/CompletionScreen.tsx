@@ -2,9 +2,10 @@ import type { KanjiState } from "./types";
 
 type CompletionScreenProps = {
   kanjis: KanjiState[];
+  onLearnMore?: () => void;
 };
 
-export default function CompletionScreen({ kanjis }: CompletionScreenProps) {
+export default function CompletionScreen({ kanjis, onLearnMore }: CompletionScreenProps) {
   const correctCount = kanjis.filter(k => k.incorrectStreak === 0).length;
   const totalCount = kanjis.length;
 
@@ -25,6 +26,11 @@ export default function CompletionScreen({ kanjis }: CompletionScreenProps) {
           <span className="score-value">{totalCount}</span>
         </div>
       </div>
+      {onLearnMore && (
+        <button onClick={onLearnMore} className="learn-more-button">
+          Learn More Kanjis Today
+        </button>
+      )}
     </div>
   );
 }

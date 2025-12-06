@@ -30,4 +30,8 @@ export class Transport {
     const result = await (window as any).GetKanjis();
     return result;
   }
+
+  public async learnMoreKanjis(): Promise<void> {
+    await (window as any).LearnMoreKanjis();
+  }
 }

@@ -17,6 +17,7 @@ export default function App() {
     shake,
     isLoading,
     handleSubmit,
+    handleLearnMore,
   } = useKanjiReview();
 
   if (isLoading) {
@@ -24,7 +25,7 @@ export default function App() {
   }
 
   if (!currentReview || !currentKanji) {
-    return <CompletionScreen kanjis={kanjis} />;
+    return <CompletionScreen kanjis={kanjis} onLearnMore={handleLearnMore} />;
   }
 
   return (
