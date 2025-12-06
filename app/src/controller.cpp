@@ -36,4 +36,12 @@ namespace kanji
 			review_repo.CreateOrUpdateReviewState(new_state);
 		}
 	}
+
+	void Controller::LearnMoreKanjis()
+	{
+		constexpr int MAX_REVIEWS_REQUEST = 10;
+
+		auto& review_repo = db.GetReviewStateRepository();
+		review_repo.InitializeNewReviewStates(MAX_REVIEWS_REQUEST);
+	}
 } // namespace kanji

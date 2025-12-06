@@ -17,11 +17,8 @@ int WINAPI WinMain(HINSTANCE /*hInst*/, HINSTANCE /*hPrevInst*/,
 int main()
 {
 #endif
-	kanji::database::DatabaseContext context{"kanji.db"};
-	context.GetReviewStateRepository().InitializeNewReviewStates(20);
-
 	auto scheduler = std::make_unique<kanji::scheduler::WaniKaniScheduler>();
-
+	kanji::database::DatabaseContext context{"kanji.db"};
 	kanji::Controller controller{context, std::move(scheduler)};
 
 	try
@@ -44,6 +41,12 @@ int main()
 			nlohmann::json j = nlohmann::json::parse(request);
 
 			controller.SetAnswers(j[0]["answers"]);
+			return {};
+		});
+		w.bind("LearnMoreKanjis", [&](const std::string&) -> std::string {
+			spdlog::info("Learn more kanji request");
+
+			controller.LearnMoreKanjis();
 			return {};
 		});
 		w.set_title("Basic Example");
