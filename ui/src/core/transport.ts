@@ -1,13 +1,15 @@
+export type KanjiAnswer = {
+  kanji_id: number,
+  incorrect_streak: number,
+}
+
 export type RequestAnswers = {
-  answers: {
-    kanjiID: number,
-    isCorrect: boolean,
-  }[]
+  answers: KanjiAnswer[]
 }
 
 export type KanjiWord = {
   word: string,
-  reading: string 
+  reading: string
 };
 
 export type KanjiData = {
@@ -20,16 +22,12 @@ export type KanjiData = {
 export type ResponseKanjis = KanjiData[];
 
 export class Transport {
-    foo: number = 0;
-    public sendAnswers(req: RequestAnswers): Promise<void> {
-        console.log('Sending answers:', req);
-        ++this.foo;
-        return Promise.resolve();
-    }
+  public async sendAnswers(req: RequestAnswers): Promise<void> {
+    await (window as any).SendAnswers(req);
+  }
 
-    public async getKanjis(): Promise<ResponseKanjis> {
-        const result = await (window as any).GetKanjis();
-        alert(JSON.stringify(result));
-        return result;
-    }
+  public async getKanjis(): Promise<ResponseKanjis> {
+    const result = await (window as any).GetKanjis();
+    return result;
+  }
 }

@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import { Transport, type KanjiWord } from "../core/transport";
+import { Transport, type KanjiAnswer, type KanjiWord } from "../core/transport";
 import "./App.css";
 
 type KanjiState = {
   kanji: string,
   examples: KanjiWord[],
   meaning: string,
-  isCorrect: boolean,
+  incorrectStreak: number,
   id: number,
 }
 
@@ -33,7 +33,7 @@ export default function App() {
     transport.getKanjis().then(response => {
       const loadedKanjis: KanjiState[] = response.map(k => ({
         ...k,
-        isCorrect: true, // Initially all are correct
+        incorrectStreak: 0,
       }));
       setKanjis(loadedKanjis);
 
@@ -77,7 +77,7 @@ export default function App() {
         const updated = [...prev];
         updated[currentReview.kanjiIndex] = {
           ...updated[currentReview.kanjiIndex],
-          isCorrect: false
+          incorrectStreak: updated[currentReview.kanjiIndex].incorrectStreak + 1,
         };
         return updated;
       });
@@ -96,9 +96,9 @@ export default function App() {
       // Check if deck is now empty
       if (newDeck.length === 0) {
         // Send answers first
-        const answers = kanjis.map(kanji => ({
-          kanjiID: kanji.id,
-          isCorrect: kanji.isCorrect,
+        const answers: KanjiAnswer[] = kanjis.map(kanji => ({
+          kanji_id: kanji.id,
+          incorrect_streak: kanji.incorrectStreak,
         }));
         transport.sendAnswers({ answers }).then(() => {
           // Try to get more kanjis
@@ -125,7 +125,7 @@ export default function App() {
       // Load new batch of kanjis
       const loadedKanjis: KanjiState[] = response.map(k => ({
         ...k,
-        isCorrect: true,
+        incorrectStreak: 0,
       }));
       setKanjis(loadedKanjis);
 
@@ -176,7 +176,7 @@ export default function App() {
 
   // Completion state - only show if we have kanjis but no more review items
   if (!currentReview || !currentKanji) {
-    const correctCount = kanjis.filter(k => k.isCorrect).length;
+    const correctCount = kanjis.filter(k => k.incorrectStreak == 0).length;
     const totalCount = kanjis.length;
 
     return (
@@ -237,7 +237,7 @@ export default function App() {
           {/* Question display */}
           <div className="kanji-container">
             <span className="kanji">{currentReview.question}</span>
-          </div>  
+          </div>
 
           {/* Input form */}
           <form onSubmit={handleSubmit} className="form">
