@@ -35,6 +35,19 @@ export default function FlashCard({
     }
   }, [feedback, currentReview]);
 
+  // Bind Ctrl+Z / Cmd+Z to rollback
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && canRollback) {
+        e.preventDefault();
+        onRollback();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [canRollback, onRollback]);
+
   const getPlaceholder = () => {
     if (currentReview.type === 'meaning') {
       return "Enter the meaning...";
