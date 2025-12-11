@@ -18,6 +18,8 @@ export default function App() {
     isLoading,
     handleSubmit,
     handleLearnMore,
+    canRollback,
+    handleRollback,
   } = useKanjiReview();
 
   if (isLoading) {
@@ -42,8 +44,10 @@ export default function App() {
         userInput={userInput}
         feedback={feedback}
         shake={shake}
+        canRollback={canRollback}
         onInputChange={setUserInput}
         onSubmit={handleSubmit}
+        onRollback={handleRollback}
       />
     </div>
   );

@@ -8,8 +8,10 @@ type FlashCardProps = {
   userInput: string;
   feedback: string | null;
   shake: boolean;
+  canRollback: boolean;
   onInputChange: (value: string) => void;
   onSubmit: (e: React.FormEvent) => void;
+  onRollback: () => void;
 };
 
 export default function FlashCard({
@@ -19,8 +21,10 @@ export default function FlashCard({
   userInput,
   feedback,
   shake,
+  canRollback,
   onInputChange,
   onSubmit,
+  onRollback,
 }: FlashCardProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -74,6 +78,15 @@ export default function FlashCard({
               <div className={`feedback ${feedback === "correct" ? "feedback-correct" : "feedback-incorrect"}`}>
                 {feedback === "correct" ? "正解！ Correct!" : "もう一度 Try again"}
               </div>
+            )}
+            {canRollback && (
+              <button
+                type="button"
+                onClick={onRollback}
+                className="rollback-button"
+              >
+                ↶ Undo Previous Answer
+              </button>
             )}
           </div>
         </form>

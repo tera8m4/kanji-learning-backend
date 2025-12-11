@@ -13,6 +13,7 @@ export function useKanjiReview() {
   const [feedback, setFeedback] = useState<null | string>(null);
   const [shake, setShake] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [canRollback, setCanRollback] = useState(false);
 
   // Shuffle array in random order using Fisher-Yates algorithm
   const shuffleArray = <T,>(array: T[]): T[] => {
@@ -102,6 +103,37 @@ export function useKanjiReview() {
     setFeedback(null);
     setUserInput("");
     setShake(false);
+    // Don't clear canRollback here - let it persist to next card
+  };
+
+  const handleRollback = () => {
+    // Move the last card (previous incorrect answer) back to the front
+    setReviewDeck(prev => {
+      if (prev.length === 0) return prev;
+      const newDeck = [...prev];
+      const lastCard = newDeck.pop()!;
+      newDeck.unshift(lastCard);
+      return newDeck;
+    });
+
+    // Revert the incorrect streak increment for the card we're bringing back
+    setKanjis(prev => {
+      const lastReview = reviewDeck[reviewDeck.length - 1];
+      if (!lastReview) return prev;
+
+      const updated = [...prev];
+      updated[lastReview.kanjiIndex] = {
+        ...updated[lastReview.kanjiIndex],
+        incorrectStreak: Math.max(0, updated[lastReview.kanjiIndex].incorrectStreak - 1),
+      };
+      return updated;
+    });
+
+    // Clear feedback and allow retry
+    setFeedback(null);
+    setUserInput("");
+    setShake(false);
+    setCanRollback(false);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -123,12 +155,14 @@ export function useKanjiReview() {
 
     if (isCorrect) {
       setFeedback("correct");
+      setCanRollback(false);
       setTimeout(() => {
         removeCurrentFromDeck();
       }, 500);
     } else {
       setFeedback("incorrect");
       setShake(true);
+      setCanRollback(true);
 
       setKanjis(prev => {
         const updated = [...prev];
@@ -167,5 +201,7 @@ export function useKanjiReview() {
     isLoading,
     handleSubmit,
     handleLearnMore,
+    canRollback,
+    handleRollback,
   };
 }
