@@ -17,7 +17,9 @@ namespace kanji::database
 		    "SELECT k.id, k.kanji, k.meaning "
 		    "FROM kanjis k "
 		    "INNER JOIN kanji_review_state rs ON k.id = rs.kanji_id "
-		    "WHERE rs.next_review_date < ?;";
+		    "WHERE rs.next_review_date < ? "
+		    "ORDER BY rs.next_review_date "
+		    "LIMIT 5;";
 		sqlite3_stmt* stmt;
 
 		int rc = sqlite3_prepare_v2(connection, sql, -1, &stmt, nullptr);
