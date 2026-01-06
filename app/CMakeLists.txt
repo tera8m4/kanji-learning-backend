@@ -9,10 +9,9 @@ if(MSVC)
     add_compile_options(/utf-8)
     
     set(FONT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/assets/komorebi-gothic.ttf")
+    set(INDEX_HTML_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../ui/dist/index.html")
     configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/resources.rc.in" "${CMAKE_CURRENT_BINARY_DIR}/resources.rc" @ONLY)
 endif()
-
-
 
 
 # create library from source files (excluding main.cpp)

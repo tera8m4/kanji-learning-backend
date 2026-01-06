@@ -1,7 +1,9 @@
 #include "controller.h"
 #include "database/database_context.h"
+#include "resources.h"
 #include "scheduler/wanikani_scheduler.h"
 #include "system/platform_info.h"
+#include "system/resource.h"
 #include "wallpaper/wallpaper_service.h"
 #include <filesystem>
 #include <fstream>
@@ -26,12 +28,10 @@ int main()
 
 	try
 	{
+		kanji::system::Resource index_html_resource(IDR_INDEX_HTML);
 		const std::filesystem::path filename{"index.html"};
-
-		auto size = std::filesystem::file_size(filename);
-		std::string content(size, '\0');
-		std::ifstream in(filename);
-		in.read(&content[0], size);
+		const char* index_html_data = static_cast<const char*>(index_html_resource.GetData());
+		std::string content(index_html_data, index_html_resource.GetSize());
 
 		webview::webview w(false, nullptr);
 		w.bind("GetKanjis", [&](const std::string&) -> std::string {
@@ -52,7 +52,7 @@ int main()
 			controller.LearnMoreKanjis();
 			return {};
 		});
-		w.set_title("Basic Example");
+		w.set_title("KanjiStudy");
 		w.set_size(800, 600, WEBVIEW_HINT_NONE);
 		w.set_html(content);
 		w.run();
