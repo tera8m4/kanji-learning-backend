@@ -22,16 +22,22 @@ export type KanjiData = {
 export type ResponseKanjis = KanjiData[];
 
 export class Transport {
+  private baseUrl = "http://localhost:8080";
+
   public async sendAnswers(req: RequestAnswers): Promise<void> {
-    await (window as any).SendAnswers(req);
+    await fetch(`${this.baseUrl}/api/answers`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req),
+    });
   }
 
   public async getKanjis(): Promise<ResponseKanjis> {
-    const result = await (window as any).GetKanjis();
-    return result;
+    const res = await fetch(`${this.baseUrl}/api/kanjis`);
+    return res.json();
   }
 
   public async learnMoreKanjis(): Promise<void> {
-    await (window as any).LearnMoreKanjis();
+    await fetch(`${this.baseUrl}/api/learn-more`, { method: "POST" });
   }
 }
