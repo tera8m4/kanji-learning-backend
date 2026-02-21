@@ -7,9 +7,8 @@
 
 namespace kanji
 {
-	Controller::Controller(database::DatabaseContext& in_db, wallpaper::WallpaperService& in_wallpaper, std::unique_ptr<scheduler::IScheduler> in_scheduler)
+	Controller::Controller(database::DatabaseContext& in_db, std::unique_ptr<scheduler::IScheduler> in_scheduler)
 	    : db{in_db}
-	    , wallpaper{in_wallpaper}
 	    , scheduler{std::move(in_scheduler)}
 	{
 	}
@@ -39,7 +38,6 @@ namespace kanji
 			review_repo.CreateOrUpdateReviewState(new_state);
 		}
 
-		wallpaper.GenerateWallpaper();
 		using PlatformInfo = kanji::system::PlatformInfo;
 		PlatformInfo::SetWallpaper(PlatformInfo::GetWallpaperLocation());
 	}
