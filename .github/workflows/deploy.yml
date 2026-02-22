@@ -17,7 +17,7 @@ jobs:
 
       - name: Build
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF
           cmake --build build --parallel
 
       - name: Deploy to VPS
@@ -27,6 +27,8 @@ jobs:
           VPS_USER: ${{ secrets.VPS_USER }}
         run: |
           echo "$SSH_KEY" > /tmp/key && chmod 600 /tmp/key
+          mkdir -p ~/.ssh
+          ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts
           scp -i /tmp/key build/app/KanjiReview $VPS_USER@$VPS_HOST:/opt/kanjireview/KanjiReview
           scp -i /tmp/key -r build/app/assets $VPS_USER@$VPS_HOST:/opt/kanjireview/
           ssh -i /tmp/key $VPS_USER@$VPS_HOST "sudo systemctl restart kanjireview"

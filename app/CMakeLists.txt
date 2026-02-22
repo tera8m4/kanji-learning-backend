@@ -79,7 +79,10 @@ add_executable(${PROJECT_NAME} src/main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE "${PROJECT_NAME}Lib" Crow::Crow asio)
 
 
-add_subdirectory(test)
+option(BUILD_TESTS "Build tests" ON)
+if(BUILD_TESTS)
+    add_subdirectory(test)
+endif()
 add_dependencies(${PROJECT_NAME} BuildUI)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
