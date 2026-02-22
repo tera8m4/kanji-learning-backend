@@ -76,7 +76,7 @@ int main()
 		res.end();
 	});
 
-	app.port(8080).run();
+	app.bindaddr("127.0.0.1").port(8080).run();
 
 	return 0;
 }
