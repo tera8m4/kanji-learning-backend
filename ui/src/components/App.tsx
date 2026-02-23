@@ -3,9 +3,22 @@ import LoadingScreen from "./LoadingScreen";
 import CompletionScreen from "./CompletionScreen";
 import Header from "./Header";
 import FlashCard from "./FlashCard";
+import LoginScreen from "./LoginScreen";
 import { useKanjiReview } from "../hooks/useKanjiReview";
+import { useAuth } from "../hooks/useAuth";
+import type { Transport } from "../core/transport";
 
-export default function App() {
+interface AppProps {
+  transport: Transport;
+}
+
+export default function App({ transport }: AppProps) {
+  const { isAuthenticated, handleTelegramLogin } = useAuth(transport);
+
+  if (!isAuthenticated) {
+    return <LoginScreen onLogin={handleTelegramLogin} />;
+  }
+
   const {
     kanjis,
     reviewDeck,
@@ -20,7 +33,7 @@ export default function App() {
     handleLearnMore,
     canRollback,
     handleRollback,
-  } = useKanjiReview();
+  } = useKanjiReview(transport);
 
   if (isLoading) {
     return <LoadingScreen />;

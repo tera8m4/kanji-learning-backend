@@ -1,4 +1,5 @@
-import type { RequestAnswers, ResponseKanjis } from "./transport";
+import type { RequestAnswers, ResponseKanjis, TelegramAuthPayload } from "./transport";
+import { setToken } from "./auth";
 
 // Sample kanji data for testing
 const SAMPLE_KANJIS: ResponseKanjis[] = [
@@ -77,6 +78,11 @@ const SAMPLE_KANJIS: ResponseKanjis[] = [
 export class MockTransport {
   private currentBatch = 0;
   private learnMoreRequested = false;
+
+  public async login(_data: TelegramAuthPayload): Promise<void> {
+    console.log("MockTransport: Login called");
+    setToken("mock-token");
+  }
 
   public async sendAnswers(req: RequestAnswers): Promise<void> {
     console.log("MockTransport: Sending answers", req);

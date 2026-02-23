@@ -1,12 +1,9 @@
 import { useState, useEffect } from "react";
 import * as wanakana from "wanakana";
-import type { KanjiAnswer } from "../core/transport";
+import type { KanjiAnswer, Transport } from "../core/transport";
 import type { KanjiState, ReviewItem } from "../components/types";
-import { createTransport } from "../core/transportFactory";
 
-const transport = createTransport();
-
-export function useKanjiReview() {
+export function useKanjiReview(transport: Transport) {
   const [kanjis, setKanjis] = useState<KanjiState[]>([]);
   const [reviewDeck, setReviewDeck] = useState<ReviewItem[]>([]);
   const [userInput, setUserInput] = useState("");
