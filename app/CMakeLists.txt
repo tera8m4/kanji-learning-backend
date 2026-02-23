@@ -57,10 +57,21 @@ else()
     set(CURL_LINK_TARGET CURL::libcurl)
 endif()
 
+CPMAddPackage(
+    NAME jwt-cpp
+    GITHUB_REPOSITORY Thalhammer/jwt-cpp
+    VERSION 0.7.2
+    OPTIONS "JWT_BUILD_EXAMPLES OFF" "JWT_DISABLE_PICOJSON ON"
+)
+find_package(OpenSSL REQUIRED)
+
 add_library(sqlite3 STATIC ${sqlite3_SOURCE_DIR}/sqlite3.c)
 target_include_directories(sqlite3 PUBLIC ${sqlite3_SOURCE_DIR})
 
-target_link_libraries("${PROJECT_NAME}Lib" PUBLIC sqlite3 nlohmann_json::nlohmann_json spdlog ${CURL_LINK_TARGET})
+target_link_libraries("${PROJECT_NAME}Lib" PUBLIC
+    sqlite3 nlohmann_json::nlohmann_json spdlog ${CURL_LINK_TARGET}
+    jwt-cpp::jwt-cpp OpenSSL::SSL OpenSSL::Crypto Crow::Crow asio)
+    
 if(CURL_STATIC)
     target_compile_definitions("${PROJECT_NAME}Lib" PRIVATE
       CURL_STATICLIB
