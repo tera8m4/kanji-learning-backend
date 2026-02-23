@@ -15,10 +15,6 @@ interface AppProps {
 export default function App({ transport }: AppProps) {
   const { isAuthenticated, handleTelegramLogin } = useAuth(transport);
 
-  if (!isAuthenticated) {
-    return <LoginScreen onLogin={handleTelegramLogin} />;
-  }
-
   const {
     kanjis,
     reviewDeck,
@@ -34,6 +30,11 @@ export default function App({ transport }: AppProps) {
     canRollback,
     handleRollback,
   } = useKanjiReview(transport);
+
+
+  if (!isAuthenticated) {
+    return <LoginScreen onLogin={handleTelegramLogin} />;
+  }
 
   if (isLoading) {
     return <LoadingScreen />;

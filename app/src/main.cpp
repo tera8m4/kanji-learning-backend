@@ -43,7 +43,7 @@ int main()
 		return 1;
 	}
 
-	auto auth_service = std::make_shared<kanji::auth::AuthService>(config.auth);
+	auto auth_service = std::make_shared<kanji::auth::AuthService>(config.auth, config.notification.telegram.chat_id);
 	crow::App<crow::CORSHandler, kanji::auth::JwtMiddleware> app;
 
 	auto& cors = app.get_middleware<crow::CORSHandler>();
@@ -59,11 +59,21 @@ int main()
 	CROW_ROUTE(app, "/api/login").methods("POST"_method)([&](const crow::request& req) {
 		auto j = nlohmann::json::parse(req.body);
 		kanji::auth::TelegramAuthData data{
-		    j["id"].get<std::string>(), j["first_name"], j["username"],
-		    j["auth_date"].get<int64_t>(), j["hash"]};
+		    .id = j["id"].get<int>(),
+		    .first_name = j["first_name"],
+		    .last_name = j.value("last_name", ""),
+		    .username = j["username"],
+		    .photo_url = j.value("photo_url", ""),
+		    .auth_date = j["auth_date"].get<int64_t>(),
+		    .hash = j["hash"],
+		};
+
+		spdlog::debug("Login request body: {}", req.body);
+		spdlog::info("Login attempt: id={}, username={}", data.id, data.username);
 
 		if (!kanji::auth::VerifyTelegramAuth(data, config.notification.telegram.bot_token))
 		{
+			spdlog::warn("Login rejected (401) for id={}", data.id);
 			return crow::response(401);
 		}
 

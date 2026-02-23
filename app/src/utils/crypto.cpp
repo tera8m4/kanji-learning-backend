@@ -20,7 +20,7 @@ namespace kanji::utils::crypto
 	Hash SHA256(std::string_view view)
 	{
 		Hash hash;
-		hash.value.reserve(EVP_MAX_MD_SIZE);
+		hash.value.resize(EVP_MAX_MD_SIZE);
 
 		unsigned int length = 0;
 		EVP_MD_CTX* sha_ctx = EVP_MD_CTX_new();

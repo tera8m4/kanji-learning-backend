@@ -1,5 +1,6 @@
 #include "jwt_middleware.h"
 #include "auth_service.h"
+#include <spdlog/spdlog.h>
 
 namespace kanji::auth
 {
@@ -15,6 +16,7 @@ namespace kanji::auth
 		const auto auth_header = req.get_header_value("Authorization");
 		if (auth_header.empty() || auth_header.substr(0, bearer_prefix.size()) != bearer_prefix)
 		{
+			spdlog::warn("JWT middleware: missing/invalid Authorization header for {}", req.url);
 			res.code = 401;
 			res.end();
 			return;
@@ -24,8 +26,9 @@ namespace kanji::auth
 		{
 			auth_service->ValidateToken(auth_header.substr(bearer_prefix.size()));
 		}
-		catch (...)
+		catch (const std::exception& e)
 		{
+			spdlog::warn("JWT middleware: token validation failed for {}: {}", req.url, e.what());
 			res.code = 401;
 			res.end();
 		}

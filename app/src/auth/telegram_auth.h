@@ -7,9 +7,11 @@ namespace kanji::auth
 {
 	struct TelegramAuthData
 	{
-		std::string id;
+		int id;
 		std::string first_name;
+		std::string last_name;   // optional
 		std::string username;
+		std::string photo_url;   // optional
 		std::int64_t auth_date;
 		std::string hash;
 

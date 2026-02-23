@@ -10,7 +10,8 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
   const widgetRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    window.onTelegramAuth = (data: TelegramAuthPayload) => onLogin(data);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).onTelegramAuth = (data: TelegramAuthPayload) => onLogin(data);
 
     const script = document.createElement("script");
     script.src = "https://telegram.org/js/telegram-widget.js?22";
@@ -25,7 +26,8 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
     widgetRef.current?.appendChild(script);
 
     return () => {
-      delete window.onTelegramAuth;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (window as any).onTelegramAuth;
     };
   }, [onLogin]);
 

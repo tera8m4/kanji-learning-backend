@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getToken, setToken, clearToken } from "../core/auth";
+import { getToken, clearToken } from "../core/auth";
 import type { Transport, TelegramAuthPayload } from "../core/transport";
 
 export function useAuth(transport: Transport) {
