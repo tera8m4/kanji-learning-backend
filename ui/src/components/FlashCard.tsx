@@ -12,6 +12,7 @@ type FlashCardProps = {
   onInputChange: (value: string) => void;
   onSubmit: (e: React.FormEvent) => void;
   onRollback: () => void;
+  onContinue: () => void;
 };
 
 export default function FlashCard({
@@ -25,6 +26,7 @@ export default function FlashCard({
   onInputChange,
   onSubmit,
   onRollback,
+  onContinue,
 }: FlashCardProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -35,18 +37,22 @@ export default function FlashCard({
     }
   }, [feedback, currentReview]);
 
-  // Bind Ctrl+Z / Cmd+Z to rollback
+  // Bind Ctrl+Z / Cmd+Z to rollback, Enter/Space to continue after incorrect
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'z' && canRollback) {
         e.preventDefault();
         onRollback();
       }
+      if (feedback === "incorrect" && (e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault();
+        onContinue();
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [canRollback, onRollback]);
+  }, [canRollback, onRollback, feedback, onContinue]);
 
   const getPlaceholder = () => {
     if (currentReview.type === 'meaning') {
@@ -87,12 +93,26 @@ export default function FlashCard({
           </div>
 
           <div className="feedback-container">
-            {feedback && (
-              <div className={`feedback ${feedback === "correct" ? "feedback-correct" : "feedback-incorrect"}`}>
-                {feedback === "correct" ? "正解！ Correct!" : "もう一度 Try again"}
+            {feedback === "correct" && (
+              <div className="feedback feedback-correct">
+                正解！ Correct!
               </div>
             )}
-            {canRollback && (
+            {feedback === "incorrect" && (
+              <>
+                <div className="feedback feedback-incorrect">
+                  答え: {currentReview.answer}
+                </div>
+                <button
+                  type="button"
+                  onClick={onContinue}
+                  className="continue-button"
+                >
+                  Continue
+                </button>
+              </>
+            )}
+            {canRollback && !feedback && (
               <button
                 type="button"
                 onClick={onRollback}

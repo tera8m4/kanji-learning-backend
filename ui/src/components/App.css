@@ -344,6 +344,31 @@
   transform: translateY(0);
 }
 
+.continue-button {
+  padding: 8px 24px;
+  font-size: 0.9rem;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-weight: 500;
+  color: #fff;
+  background: #8b7355;
+  border: 2px solid #8b7355;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.1em;
+  margin-top: 8px;
+}
+
+.continue-button:hover {
+  background: #5a4a3a;
+  border-color: #5a4a3a;
+  transform: translateY(-1px);
+}
+
+.continue-button:active {
+  transform: translateY(0);
+}
+
 /* Buttons */
 .button-group {
   display: flex;

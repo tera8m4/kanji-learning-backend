@@ -29,6 +29,7 @@ export default function App({ transport }: AppProps) {
     handleLearnMore,
     canRollback,
     handleRollback,
+    handleContinue,
   } = useKanjiReview(transport);
 
 
@@ -62,6 +63,7 @@ export default function App({ transport }: AppProps) {
         onInputChange={setUserInput}
         onSubmit={handleSubmit}
         onRollback={handleRollback}
+        onContinue={handleContinue}
       />
     </div>
   );

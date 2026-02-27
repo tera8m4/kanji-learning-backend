@@ -170,9 +170,12 @@ export function useKanjiReview(transport: Transport) {
         return updated;
       });
 
-      setTimeout(() => {
-        moveToEndAndNext();
-      }, 800);
+    }
+  };
+
+  const handleContinue = () => {
+    if (feedback === "incorrect") {
+      moveToEndAndNext();
     }
   };
 
@@ -200,5 +203,6 @@ export function useKanjiReview(transport: Transport) {
     handleLearnMore,
     canRollback,
     handleRollback,
+    handleContinue,
   };
 }
