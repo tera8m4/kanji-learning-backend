@@ -33,7 +33,12 @@ export function useKanjiReview(transport: Transport) {
     }
   };
 
-  const loadKanjis = (response: any[]) => {
+  const preloadFontGlyphs = async (text: string) => {
+    if (!document.fonts) return;
+    await document.fonts.load("700 6rem 'Noto Serif JP'", text);
+  };
+
+  const loadKanjis = async (response: any[]) => {
     const loadedKanjis: KanjiState[] = response.map(k => ({
       ...k,
       incorrectStreak: 0,
@@ -47,6 +52,10 @@ export function useKanjiReview(transport: Transport) {
         deck.push({ type: 'word', kanjiIndex, question: word.word, answer: word.reading });
       });
     });
+
+    // Preload font subsets for all glyphs before showing cards
+    const allGlyphs = deck.map(item => item.question).join("");
+    await preloadFontGlyphs(allGlyphs);
 
     // Shuffle the deck for random order
     const shuffledDeck = shuffleArray(deck);
@@ -183,7 +192,7 @@ export function useKanjiReview(transport: Transport) {
     setIsLoading(true);
     await transport.learnMoreKanjis();
     const response = await transport.getKanjis();
-    loadKanjis(response);
+    await loadKanjis(response);
   };
 
   const currentReview = reviewDeck[0];
