@@ -43,10 +43,19 @@ export type KanjiListEntry = {
 
 export class Transport {
   private baseUrl = "";
+  public onSessionExpired: (() => void) | null = null;
 
   private getAuthHeaders(): HeadersInit {
     const token = getToken();
     return token ? { Authorization: `Bearer ${token}` } : {};
+  }
+
+  private async fetchWithAuth(input: RequestInfo, init?: RequestInit): Promise<Response> {
+    const res = await fetch(input, init);
+    if (res.status === 401) {
+      this.onSessionExpired?.();
+    }
+    return res;
   }
 
   public async login(telegramData: TelegramAuthPayload): Promise<void> {
@@ -61,7 +70,7 @@ export class Transport {
   }
 
   public async sendAnswers(req: RequestAnswers): Promise<void> {
-    await fetch(`${this.baseUrl}/api/answers`, {
+    await this.fetchWithAuth(`${this.baseUrl}/api/answers`, {
       method: "POST",
       headers: { "Content-Type": "application/json", ...this.getAuthHeaders() },
       body: JSON.stringify(req),
@@ -69,21 +78,21 @@ export class Transport {
   }
 
   public async getReviews(): Promise<ResponseKanjis> {
-    const res = await fetch(`${this.baseUrl}/api/reviews`, {
+    const res = await this.fetchWithAuth(`${this.baseUrl}/api/reviews`, {
       headers: this.getAuthHeaders(),
     });
     return res.json();
   }
 
   public async learnMoreKanjis(): Promise<void> {
-    await fetch(`${this.baseUrl}/api/learn-more`, {
+    await this.fetchWithAuth(`${this.baseUrl}/api/learn-more`, {
       method: "POST",
       headers: this.getAuthHeaders(),
     });
   }
 
   public async getKanjiList(): Promise<KanjiListEntry[]> {
-    const res = await fetch(`${this.baseUrl}/api/kanjis`, {
+    const res = await this.fetchWithAuth(`${this.baseUrl}/api/kanjis`, {
       headers: this.getAuthHeaders(),
     });
     return res.json();
