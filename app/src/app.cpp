@@ -62,7 +62,7 @@ namespace kanji
 
 		CROW_ROUTE(app, "/api/reviews").methods("GET"_method)([&]() {
 			std::lock_guard lock(controller_mutex);
-			nlohmann::json j = controller.GetReviewKanjis();
+			nlohmann::json j = controller.GetReviews();
 			auto res = crow::response(j.dump());
 			res.set_header("Content-Type", "application/json");
 			return res;

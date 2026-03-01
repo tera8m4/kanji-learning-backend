@@ -17,7 +17,7 @@ export default function CompletionScreen({ kanjis, onLearnMore }: CompletionScre
         <h1 className="title">完了！</h1>
         <p className="subtitle">Review Complete</p>
       </header>
-      <div className="score-container" style={{ position: 'static', marginTop: '20px' }}>
+      <div className="score-container">
         <div className="score-box">
           <span className="score-label">正解</span>
           <span className="score-value">{correctCount}</span>

@@ -6,6 +6,7 @@ import type { KanjiState, ReviewItem } from "../components/types";
 export function useKanjiReview(transport: Transport) {
   const [kanjis, setKanjis] = useState<KanjiState[]>([]);
   const [reviewDeck, setReviewDeck] = useState<ReviewItem[]>([]);
+  const [totalPending, setTotalPending] = useState(0);
   const [userInput, setUserInput] = useState("");
   const [feedback, setFeedback] = useState<null | string>(null);
   const [shake, setShake] = useState(false);
@@ -38,7 +39,8 @@ export function useKanjiReview(transport: Transport) {
     await document.fonts.load("700 6rem 'Noto Serif JP'", text);
   };
 
-  const loadKanjis = async (response: any[]) => {
+  const loadKanjis = async (response: any[], total: number) => {
+    setTotalPending(total);
     const loadedKanjis: KanjiState[] = response.map(k => ({
       ...k,
       incorrectStreak: 0,
@@ -65,17 +67,18 @@ export function useKanjiReview(transport: Transport) {
 
   const loadMoreKanjis = () => {
     setIsLoading(true);
-    transport.getReviews().then(response => {
-      if (response.length === 0) {
+    transport.getReviews().then(({ kanjis, total }) => {
+      if (kanjis.length === 0) {
+        setTotalPending(total);
         setIsLoading(false);
         return;
       }
-      loadKanjis(response);
+      loadKanjis(kanjis, total);
     });
   };
 
   useEffect(() => {
-    transport.getReviews().then(loadKanjis);
+    transport.getReviews().then(({ kanjis, total }) => loadKanjis(kanjis, total));
   }, []);
 
   const removeCurrentFromDeck = () => {
@@ -191,8 +194,8 @@ export function useKanjiReview(transport: Transport) {
   const handleLearnMore = async () => {
     setIsLoading(true);
     await transport.learnMoreKanjis();
-    const response = await transport.getReviews();
-    await loadKanjis(response);
+    const { kanjis, total } = await transport.getReviews();
+    await loadKanjis(kanjis, total);
   };
 
   const currentReview = reviewDeck[0];
@@ -201,6 +204,7 @@ export function useKanjiReview(transport: Transport) {
   return {
     kanjis,
     reviewDeck,
+    totalPending,
     currentReview,
     currentKanji,
     userInput,

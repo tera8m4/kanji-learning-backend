@@ -14,6 +14,7 @@ export default function ReviewScreen({ transport }: ReviewScreenProps) {
     kanjis,
     reviewDeck,
     currentReview,
+    totalPending,
     currentKanji,
     userInput,
     setUserInput,
@@ -60,6 +61,13 @@ export default function ReviewScreen({ transport }: ReviewScreenProps) {
         onRollback={handleRollback}
         onContinue={handleContinue}
       />
+
+      <div className="score-container">
+        <div className="score-box">
+          <span className="score-value">{totalPending}</span>
+          <span className="score-label">kanji</span>
+        </div>
+      </div>
     </div>
   );
 }

@@ -15,6 +15,7 @@ namespace kanji::database
 		KanjiRepository& operator=(const KanjiRepository&) = delete;
 
 		std::vector<KanjiData> GetKanjiForReview() const;
+		int GetPendingReviewCount() const;
 		std::vector<KanjiRecord> GetKanjis() const;
 		void BatchInsertKanjis(const std::vector<KanjiData>& kanjis);
 

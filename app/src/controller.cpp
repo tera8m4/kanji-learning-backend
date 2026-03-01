@@ -12,11 +12,10 @@ namespace kanji
 	{
 	}
 
-	std::vector<KanjiData> Controller::GetReviewKanjis()
+	ReviewsResponse Controller::GetReviews()
 	{
-		return db
-		    .GetKanjiRepository()
-		    .GetKanjiForReview();
+		auto& repo = db.GetKanjiRepository();
+		return {repo.GetKanjiForReview(), repo.GetPendingReviewCount()};
 	}
 
 	void Controller::SetAnswers(const std::vector<KanjiAnswer>& in_answers)

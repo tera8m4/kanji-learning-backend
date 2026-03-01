@@ -31,7 +31,10 @@ export type KanjiData = {
   meaning: string,
 };
 
-export type ResponseKanjis = KanjiData[];
+export type ResponseReviews = {
+  kanjis: KanjiData[];
+  total: number;
+};
 
 export type KanjiListEntry = {
   id: number;
@@ -77,7 +80,7 @@ export class Transport {
     });
   }
 
-  public async getReviews(): Promise<ResponseKanjis> {
+  public async getReviews(): Promise<ResponseReviews> {
     const res = await this.fetchWithAuth(`${this.baseUrl}/api/reviews`, {
       headers: this.getAuthHeaders(),
     });

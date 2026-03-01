@@ -44,9 +44,16 @@ namespace kanji
 		std::int64_t next_review_date;
 	};
 
+	struct ReviewsResponse
+	{
+		std::vector<KanjiData> kanjis;
+		int total;
+	};
+
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(KanjiWord, word, reading)
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(KanjiData, id, kanji, examples, meaning)
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(KanjiAnswer, kanji_id, incorrect_streak)
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(KanjiRecord, id, kanji, meaning, level, next_review_date)
+	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ReviewsResponse, kanjis, total)
 
 }; // namespace kanji

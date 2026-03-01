@@ -46,6 +46,34 @@ namespace kanji::database
 		return kanjis;
 	}
 
+	int KanjiRepository::GetPendingReviewCount() const
+	{
+		const char* sql =
+		    "SELECT COUNT(*) "
+		    "FROM kanji_review_state "
+		    "WHERE next_review_date < ?;";
+		sqlite3_stmt* stmt;
+
+		int rc = sqlite3_prepare_v2(connection, sql, -1, &stmt, nullptr);
+		if (rc != SQLITE_OK)
+		{
+			spdlog::error("Failed to prepare statement: {0}", sqlite3_errmsg(connection));
+			return 0;
+		}
+
+		std::int64_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		sqlite3_bind_int64(stmt, 1, now);
+
+		int count = 0;
+		if (sqlite3_step(stmt) == SQLITE_ROW)
+		{
+			count = sqlite3_column_int(stmt, 0);
+		}
+
+		sqlite3_finalize(stmt);
+		return count;
+	}
+
 	void KanjiRepository::BatchInsertKanjis(const std::vector<KanjiData>& kanjis)
 	{
 		if (kanjis.empty())

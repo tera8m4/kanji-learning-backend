@@ -22,8 +22,7 @@ namespace kanji::notification
 	{
 		while (!stop_token.stop_requested())
 		{
-			const auto pending = db.GetKanjiRepository().GetKanjiForReview();
-			const int count = static_cast<int>(pending.size());
+			const int count = db.GetKanjiRepository().GetPendingReviewCount();
 
 			if (count > 0)
 			{
